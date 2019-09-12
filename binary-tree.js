@@ -28,14 +28,14 @@ class BinaryTree {
     // calculate the maximum amount of nodes in any one path from the given node
     // if not given a specific node, default to using the root node
   }
-  remove(val) {
-    //remove a node if it exists
-    //
-  }
   isBalanced(node) {
     // return true or false based on whether the sub-tree starting at the given node is balanced
     // A tree is imbalanced if the height of one branch exceeds the other side by more than one level
     // A tree is balanced if all branches end within one level of each other.
+  }
+  remove(val) {
+    //remove a node if it exists
+    //
   }
 }
 
