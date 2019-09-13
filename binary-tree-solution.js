@@ -105,13 +105,10 @@ class BinarySearchTree {
     rHeight(node);
     return maxHeight;
   }
-  isBalanced(node = this.root) {
-    // return true or false based on whether the sub-tree starting at the given node is balanced
-    // A tree is imbalanced if the height of one branch exceeds the other side by more than one level
-    // A tree is balanced if all branches end within one level of each other.
+  balanceFactor(node) {
     let maxHeight = 0;
     let minHeight = null;
-    function rHeight(node, height = 1) {
+    function bHeight(node, height = 1) {
       if (node) {
         if (height > maxHeight) {
           maxHeight = height;
@@ -124,13 +121,16 @@ class BinarySearchTree {
             minHeight = height;
           }
         }
-        rHeight(node.left, height + 1);
-        rHeight(node.right, height + 1);
+        bHeight(node.left, height + 1);
+        bHeight(node.right, height + 1);
       }
     }
-    rHeight(node);
+    bHeight(node);
     console.log(minHeight, maxHeight);
-    return maxHeight - minHeight >= 2 ? false : true;
+    return maxHeight - minHeight;
+  }
+  isBalanced(node = this.root) {
+    return this.balanceFactor(node) > 2 ? false : true;
   }
   remove(value) {
     if (!this.root) {
@@ -203,6 +203,8 @@ class BinarySearchTree {
   }
 }
 
+module.exports = { BinaryNode, BinarySearchTree };
+
 const tree = new BinarySearchTree();
 tree.insert(9);
 tree.insert(4);
@@ -233,12 +235,12 @@ JSON.stringify(traverse(tree.root));
 //console.log(JSON.stringify(traverse(tree.root)));
 
 console.log(tree.lookup(9));
-console.log(tree.remove(9));
+// console.log(tree.remove(9));
 console.log(JSON.stringify(traverse(tree.root)));
 // console.log(tree.size());
 // console.log(tree.getMax());
 // console.log(tree.getMin());
 // console.log(tree.height());
-// console.log(tree.isBalanced());
+console.log(tree.isBalanced());
 
 //tree.remove(15);
