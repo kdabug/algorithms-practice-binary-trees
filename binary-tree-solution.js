@@ -7,7 +7,7 @@ class BinaryNode {
   }
 }
 
-class BinarySearchTree {
+class BinaryTree {
   constructor() {
     this.root = null;
   }
@@ -202,22 +202,21 @@ class BinarySearchTree {
     }
   }
 }
+module.exports = BinaryTree;
 
-module.exports = { BinaryNode, BinarySearchTree };
-
-const tree = new BinarySearchTree();
-tree.insert(9);
-tree.insert(4);
-tree.insert(6);
-tree.insert(20);
-tree.insert(170);
+// const tree = new BinaryTree();
+// tree.insert(9);
+// tree.insert(4);
+// tree.insert(6);
+// tree.insert(20);
+// tree.insert(170);
 // tree.insert(180);
 // tree.insert(160);
 // tree.insert(177);
 // tree.insert(167);
 // tree.insert(168);
-tree.insert(15);
-tree.insert(1);
+// tree.insert(15);
+// tree.insert(1);
 
 //VISUALIZATION and TRAVERSALS
 //      9
@@ -225,22 +224,22 @@ tree.insert(1);
 //1   6  15   170
 
 //below is recursion - -for testing the above tree
-function traverse(node) {
-  const tree = { value: node.value };
-  tree.left = node.left === null ? null : traverse(node.left);
-  tree.right = node.right === null ? null : traverse(node.right);
-  return tree;
-}
-JSON.stringify(traverse(tree.root));
+// function traverse(node) {
+//   const tree = { value: node.value };
+//   tree.left = node.left === null ? null : traverse(node.left);
+//   tree.right = node.right === null ? null : traverse(node.right);
+//   return tree;
+// }
+// JSON.stringify(traverse(tree.root));
 //console.log(JSON.stringify(traverse(tree.root)));
 
-console.log(tree.lookup(9));
+// console.log(tree.lookup(9));
 // console.log(tree.remove(9));
-console.log(JSON.stringify(traverse(tree.root)));
+// console.log(JSON.stringify(traverse(tree.root)));
 // console.log(tree.size());
 // console.log(tree.getMax());
 // console.log(tree.getMin());
 // console.log(tree.height());
-console.log(tree.isBalanced());
+// console.log(tree.isBalanced());
 
 //tree.remove(15);

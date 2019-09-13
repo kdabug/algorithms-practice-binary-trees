@@ -1,22 +1,5 @@
-import { BinaryNode, BinarySearchTree } from "./binary-tree-solution";
-class AVLTree extends BinarySearchTree {
-  insert(data) {
-    // add a new Node to the tree, with data as the Node's data
-    // insertion starts the same way as in a regular Binary Tree
-    // once the node is inserted, however, check the heights for imbalance
-    // if the new node causes imbalance, perform rotations to rebalance
-    super.insert(data);
-    let currentNode = this.root;
-    if (!this.root) {
-      this.root = newNode;
-      return this;
-    }
-    let currentNode = this.root;
-    while (currentNode) {
-      this.balance(currentNode);
-      currentNode = currentNode.parent;
-    }
-  }
+const BinaryTree = require("./binary-tree-solution");
+class AvlTree extends BinaryTree {
   balance(node) {
     if (super.balanceFactor(node) > 1) {
       //left rotation - TWO OPTIONS
@@ -80,20 +63,32 @@ class AVLTree extends BinarySearchTree {
     rightRotation(node.right);
     return leftRotation(node);
   }
-  add(value) {
-    const node = super.add(value);
-    balanceUptream(node);
+  insert(data) {
+    // add a new Node to the tree, with data as the Node's data
+    // insertion starts the same way as in a regular Binary Tree
+    // once the node is inserted, however, check the heights for imbalance
+    // if the new node causes imbalance, perform rotations to rebalance
+    const node = super.insert(data);
+    this.balanceUp(node);
     return node;
   }
-
-  remove(value) {
-    const node = super.find(value);
+  remove(data) {
+    const node = super.lookUp(data);
     if (node) {
-      const found = super.remove(value);
-      balanceUptream(node.parent);
+      const found = super.remove(data);
+      this.balanceUp(node.parent);
       return found;
     }
-
     return false;
   }
+  balanceUp(node) {
+    let current = node;
+    while (current) {
+      this.balance(current);
+      current = current.parent;
+    }
+  }
 }
+
+let avlTree = new AvlTree();
+console.log(avlTree);
