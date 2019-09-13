@@ -202,19 +202,19 @@ class BinaryTree {
     }
   }
 }
-module.exports = BinaryTree;
+module.exports = { BinaryTree, traverse };
 
-// const tree = new BinaryTree();
-// tree.insert(9);
-// tree.insert(4);
-// tree.insert(6);
-// tree.insert(20);
-// tree.insert(170);
-// tree.insert(180);
-// tree.insert(160);
-// tree.insert(177);
-// tree.insert(167);
-// tree.insert(168);
+const tree = new BinaryTree();
+tree.insert(9);
+tree.insert(4);
+tree.insert(6);
+tree.insert(20);
+tree.insert(170);
+tree.insert(180);
+tree.insert(160);
+tree.insert(177);
+tree.insert(167);
+tree.insert(168);
 // tree.insert(15);
 // tree.insert(1);
 
@@ -224,12 +224,12 @@ module.exports = BinaryTree;
 //1   6  15   170
 
 //below is recursion - -for testing the above tree
-// function traverse(node) {
-//   const tree = { value: node.value };
-//   tree.left = node.left === null ? null : traverse(node.left);
-//   tree.right = node.right === null ? null : traverse(node.right);
-//   return tree;
-// }
+function traverse(node) {
+  const tree = { value: node.value };
+  tree.left = node.left === null ? null : traverse(node.left);
+  tree.right = node.right === null ? null : traverse(node.right);
+  return tree;
+}
 // JSON.stringify(traverse(tree.root));
 //console.log(JSON.stringify(traverse(tree.root)));
 
@@ -240,6 +240,6 @@ module.exports = BinaryTree;
 // console.log(tree.getMax());
 // console.log(tree.getMin());
 // console.log(tree.height());
-// console.log(tree.isBalanced());
+console.log(tree.isBalanced());
 
 //tree.remove(15);
