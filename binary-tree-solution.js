@@ -4,6 +4,7 @@ class BinaryNode {
     this.value = value;
     this.left = null;
     this.right = null;
+    this.parent = null;
   }
 }
 
@@ -27,16 +28,18 @@ class BinaryTree {
         if (value < currentNode.value) {
           if (!currentNode.left) {
             //there is nothing to the left - put value here
+            newNode.parent = currentNode;
             currentNode.left = newNode;
-            return this;
+            return newNode;
           }
           currentNode = currentNode.left; //run while loop again using value left of root as currentNode
         } else {
           //RIGHT - value is greater than root
           if (!currentNode.right) {
             //there is no value currently to the right - put value here
+            newNode.parent = currentNode;
             currentNode.right = newNode;
-            return this;
+            return newNode;
           }
           currentNode = currentNode.right; //run while loop again with value to the right of root
         }
@@ -59,6 +62,17 @@ class BinaryTree {
     }
     return false;
   }
+  lookUpNodeAndParent(value, node = this.root, parent = null) {
+    if (!node || node.value === value) {
+      return { found: node, parent };
+    }
+    if (value < node.value) {
+      return this.findNodeAndParent(value, node.left, node);
+    }
+    return this.findNodeAndParent(value, node.right, node);
+  }
+
+  //size returns the number of nodes that are in the tree
   size(node = this.root) {
     let count = 0;
     function rSize(node) {
@@ -71,26 +85,29 @@ class BinaryTree {
     rSize(node);
     return count;
   }
-  getMax() {
+  //getMax returns the largest node in the tree
+  getMax(node = this.root) {
     if (!this.root) {
       return null;
     }
-    let currentNode = this.root;
+    let currentNode = node;
     while (currentNode.right) {
       currentNode = currentNode.right;
     }
     return currentNode;
   }
-  getMin() {
+  //gitMin returns the smallest node in the tree
+  getMin(node = this.root) {
     if (!this.root) {
       return null;
     }
-    let currentNode = this.root;
+    let currentNode = node;
     while (currentNode.left) {
       currentNode = currentNode.left;
     }
     return currentNode;
   }
+  //height returns the height in levels of a specified node
   height(node = this.root) {
     let maxHeight = 0;
     function rHeight(node, height = 1) {
@@ -105,6 +122,7 @@ class BinaryTree {
     rHeight(node);
     return maxHeight;
   }
+
   balanceFactor(node) {
     let maxHeight = 0;
     let minHeight = null;
@@ -113,7 +131,10 @@ class BinaryTree {
         if (height > maxHeight) {
           maxHeight = height;
         }
-        if (height < maxHeight) {
+        if (
+          (!node.left && !node.right) ||
+          (!node.right && height < maxHeight)
+        ) {
           if (!minHeight) {
             minHeight = height;
           }
@@ -126,80 +147,39 @@ class BinaryTree {
       }
     }
     bHeight(node);
+    this.root && minHeight === null && (this.root.right || this.root.left)
+      ? (minHeight = 1)
+      : minHeight;
     console.log(minHeight, maxHeight);
     return maxHeight - minHeight;
   }
   isBalanced(node = this.root) {
     return this.balanceFactor(node) > 2 ? false : true;
   }
-  remove(value) {
-    if (!this.root) {
-      return false;
-    }
-    let currentNode = this.root;
-    let parentNode = null;
-    while (currentNode) {
-      if (value < currentNode.value) {
-        parentNode = currentNode;
-        currentNode = currentNode.right;
-      } else if (currentNode.value === value) {
-        //we have a match
-        //option 1: no right child;
-        if (currentNode.right === null) {
-          if (parentNode === null) {
-            this.root = currentNode.left;
-          } else {
-            //if parent > current value, make current
-            //left child a child of parent
-            if (currentNode.value < parentNode.value) {
-              parentNode.left = currentNode.left;
-            } else if (currentNode.value > parentNode.value) {
-              parentNode.right = currentNode.left;
-            }
-          }
-          //Option 2: Right child which doesnt have a left child
-        } else if (currentNode.right.left === null) {
-          currentNode.right.left = currentNode.left;
-          if (parentNode === null) {
-            this.root = currentNode.right;
-          } else {
-            //if parent > current, make right child of the left the parent
-            if (currentNode.value < parentNode.value) {
-              parentNode.left = currentNode.right;
-
-              //if parent < current, make right child a right child of the parent
-            } else if (currentNode.value > parentNode.value) {
-              parentNode.right = currentNode.right;
-            }
-          }
-
-          //Option 3: Right child that has a left child
-        } else {
-          //find the Right child's left most child
-          let leftmost = currentNode.right.left;
-          let leftmostParent = currentNode.right;
-          while (leftmost.left !== null) {
-            leftmostParent = leftmost;
-            leftmost = leftmost.left;
-          }
-          //Parent's left subtree is now leftmost's right subtree
-          leftmostParent.left = leftmost.right;
-          leftmost.left = currentNode.left;
-          leftmost.right = currentNode.right;
-
-          if (parentNode === null) {
-            this.root = leftmost;
-          } else {
-            if (currentNode.value < parentNode.value) {
-              parentNode.left = leftmost;
-            } else if (currentNode.value > parentNode.value) {
-              parentNode.right = leftmost;
-            }
-          }
+  remove(value, node = this.root) {
+    if (!node) {
+      this.root = this.remove(value, this.root);
+    } else if (value < node.value && node.left) {
+      node.left = this.remove(value, node.left);
+    } else if (value > node.value && node.right) {
+      node.right = this.remove(value, node.right);
+    } else if (value === node.value) {
+      // check if node is a leaf node
+      if (node.left && node.right) {
+        // node has two children. change its value to the min
+        // right value and remove the min right node
+        node.value = this.getMin(node.right);
+        node.right = this.remove(node.value, node.right);
+      } else {
+        // replace the node with whichever child it has
+        let parent = node.parent;
+        node = node.left || node.right;
+        if (node) {
+          node.parent = parent;
         }
-        return true;
       }
     }
+    return node;
   }
 }
 module.exports = { BinaryTree, traverse };
@@ -215,14 +195,16 @@ tree.insert(160);
 tree.insert(177);
 tree.insert(167);
 tree.insert(168);
-// tree.insert(15);
-// tree.insert(1);
+tree.insert(15);
+tree.insert(1);
 
 //VISUALIZATION and TRAVERSALS
-//      9
-//  4       20
-//1   6  15   170
-
+//            9
+//     4              20
+//  1      6     15         170
+//                      160     180
+//                        167      177
+//                           168
 //below is recursion - -for testing the above tree
 function traverse(node) {
   const tree = { value: node.value };
@@ -234,11 +216,11 @@ function traverse(node) {
 //console.log(JSON.stringify(traverse(tree.root)));
 
 // console.log(tree.lookup(9));
-// console.log(tree.remove(9));
+console.log(tree.remove(1));
 // console.log(JSON.stringify(traverse(tree.root)));
 // console.log(tree.size());
-// console.log(tree.getMax());
-// console.log(tree.getMin());
+console.log(tree.getMax());
+console.log(tree.getMin());
 // console.log(tree.height());
 console.log(tree.isBalanced());
 
