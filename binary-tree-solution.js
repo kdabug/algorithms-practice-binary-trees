@@ -12,6 +12,8 @@ class BinaryTree {
   constructor() {
     this.root = null;
   }
+
+  //method inserts a value into the tree
   insert(value) {
     //creates a new node
     const newNode = new BinaryNode(value);
@@ -19,7 +21,7 @@ class BinaryTree {
     if (this.root === null) {
       this.root = newNode;
     } else {
-      // root already exists
+      //root already exists
       //establish what the root is
       let currentNode = this.root;
       while (currentNode) {
@@ -46,6 +48,8 @@ class BinaryTree {
       }
     }
   }
+
+  //method looks up a value in the tree
   lookup(value) {
     if (!this.root) {
       return false;
@@ -62,14 +66,16 @@ class BinaryTree {
     }
     return false;
   }
+
+  //similar to above except uses recursion rather than a while loop
   lookUpNodeAndParent(value, node = this.root, parent = null) {
     if (!node || node.value === value) {
       return { found: node, parent };
     }
     if (value < node.value) {
-      return this.findNodeAndParent(value, node.left, node);
+      return this.lookUpNodeAndParent(value, node.left, node);
     }
-    return this.findNodeAndParent(value, node.right, node);
+    return this.lookUpNodeAndParent(value, node.right, node);
   }
 
   //size returns the number of nodes that are in the tree
@@ -85,6 +91,7 @@ class BinaryTree {
     rSize(node);
     return count;
   }
+
   //getMax returns the largest node in the tree
   getMax(node = this.root) {
     if (!this.root) {
@@ -96,6 +103,7 @@ class BinaryTree {
     }
     return currentNode;
   }
+
   //gitMin returns the smallest node in the tree
   getMin(node = this.root) {
     if (!this.root) {
@@ -107,6 +115,7 @@ class BinaryTree {
     }
     return currentNode;
   }
+
   //height returns the height in levels of a specified node
   height(node = this.root) {
     let maxHeight = 0;
@@ -123,6 +132,7 @@ class BinaryTree {
     return maxHeight;
   }
 
+  //returns the difference between the max and min heights of the tree
   balanceFactor(node) {
     let maxHeight = 0;
     let minHeight = null;
@@ -153,12 +163,16 @@ class BinaryTree {
     console.log(minHeight, maxHeight);
     return maxHeight - minHeight;
   }
+
+  //method uses balanceFactor to determine if tree is balanced
   isBalanced(node = this.root) {
-    return this.balanceFactor(node) > 2 ? false : true;
+    return this.balanceFactor(node) >= 2 ? false : true;
   }
+
+  //method removes a value from the tree
   remove(value, node = this.root) {
     if (!node) {
-      this.root = this.remove(value, this.root);
+      return false;
     } else if (value < node.value && node.left) {
       node.left = this.remove(value, node.left);
     } else if (value > node.value && node.right) {
@@ -182,46 +196,48 @@ class BinaryTree {
     return node;
   }
 }
-module.exports = { BinaryTree, traverse };
+module.exports = { BinaryTree };
 
-const tree = new BinaryTree();
-tree.insert(9);
-tree.insert(4);
-tree.insert(6);
-tree.insert(20);
-tree.insert(170);
-tree.insert(180);
-tree.insert(160);
-tree.insert(177);
-tree.insert(167);
-tree.insert(168);
-tree.insert(15);
-tree.insert(1);
+// const tree = new BinaryTree();
+// tree.remove(7);
+// console.log("hi");
+// tree.insert(9);
+// tree.insert(4);
+// tree.insert(6);
+// tree.insert(20);
+// tree.insert(170);
+// tree.insert(180);
+// tree.insert(160);
+// tree.insert(177);
+// tree.insert(167);
+// tree.insert(168);
+// tree.insert(15);
+// tree.insert(1);
 
-//VISUALIZATION and TRAVERSALS
-//            9
-//     4              20
-//  1      6     15         170
-//                      160     180
-//                        167      177
-//                           168
-//below is recursion - -for testing the above tree
-function traverse(node) {
-  const tree = { value: node.value };
-  tree.left = node.left === null ? null : traverse(node.left);
-  tree.right = node.right === null ? null : traverse(node.right);
-  return tree;
-}
-// JSON.stringify(traverse(tree.root));
-//console.log(JSON.stringify(traverse(tree.root)));
+// //VISUALIZATION and TRAVERSALS
+// //            9
+// //     4              20
+// //  1      6     15         170
+// //                      160     180
+// //                        167      177
+// //                           168
+// //below is recursion - -for testing the above tree
+// function traverse(node) {
+//   const tree = { value: node.value };
+//   tree.left = node.left === null ? null : traverse(node.left);
+//   tree.right = node.right === null ? null : traverse(node.right);
+//   return tree;
+// }
+// // JSON.stringify(traverse(tree.root));
+// //console.log(JSON.stringify(traverse(tree.root)));
 
-// console.log(tree.lookup(9));
-console.log(tree.remove(1));
-// console.log(JSON.stringify(traverse(tree.root)));
-// console.log(tree.size());
-console.log(tree.getMax());
-console.log(tree.getMin());
-// console.log(tree.height());
-console.log(tree.isBalanced());
+// // console.log(tree.lookup(9));
+// console.log(tree.remove(1));
+// // console.log(JSON.stringify(traverse(tree.root)));
+// // console.log(tree.size());
+// console.log(tree.getMax());
+// console.log(tree.getMin());
+// // console.log(tree.height());
+// console.log(tree.isBalanced());
 
-//tree.remove(15);
+// //tree.remove(15);
