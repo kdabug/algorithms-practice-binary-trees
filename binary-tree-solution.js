@@ -134,39 +134,46 @@ class BinaryTree {
 
   //returns the difference between the max and min heights of the tree
   balanceFactor(node) {
-    let maxHeight = 0;
-    let minHeight = null;
-    function bHeight(node, height = 1) {
-      if (node) {
-        if (height > maxHeight) {
-          maxHeight = height;
-        }
-        if (
-          (!node.left && !node.right) ||
-          (!node.right && height < maxHeight)
-        ) {
-          if (!minHeight) {
-            minHeight = height;
-          }
-          if (height < minHeight) {
-            minHeight = height;
-          }
-        }
-        bHeight(node.left, height + 1);
-        bHeight(node.right, height + 1);
-      }
+    let leftHeight = 0;
+    let rightHeight = 0;
+    if (node.left) {
+      leftHeight = this.height(node.left);
     }
-    bHeight(node);
-    this.root && minHeight === null && (this.root.right || this.root.left)
-      ? (minHeight = 1)
-      : minHeight;
-    console.log(minHeight, maxHeight);
-    return maxHeight - minHeight;
+    if (node.right) {
+      rightHeight = this.height(node.right);
+    }
+    console.log("leftHeight rightHeight", leftHeight, rightHeight);
+    // function bHeight(node, height = 1) {
+    //   if (node) {
+    //     if (height > maxHeight) {
+    //       maxHeight = height;
+    //     }
+    //     if (
+    //       (!node.left && !node.right) ||
+    //       (!node.right && height < maxHeight)
+    //     ) {
+    //       if (!minHeight) {
+    //         minHeight = height;
+    //       }
+    //       if (height < minHeight) {
+    //         minHeight = height;
+    //       }
+    //     }
+    //     bHeight(node.left, height + 1);
+    //     bHeight(node.right, height + 1);
+    //   }
+    // }
+    // bHeight(node);
+    // this.root && minHeight === null && (this.root.right || this.root.left)
+    //   ? (minHeight = 1)
+    //   : minHeight;
+    // //console.log(minHeight, maxHeight);
+    return leftHeight - rightHeight;
   }
 
   //method uses balanceFactor to determine if tree is balanced
   isBalanced(node = this.root) {
-    return this.balanceFactor(node) >= 2 ? false : true;
+    return Math.abs(this.balanceFactor(node)) > 1 ? false : true;
   }
 
   //method removes a value from the tree
@@ -196,7 +203,7 @@ class BinaryTree {
     return node;
   }
 }
-module.exports = { BinaryTree };
+module.exports = { BinaryTree, traverse };
 
 // const tree = new BinaryTree();
 // tree.remove(7);
@@ -222,14 +229,14 @@ module.exports = { BinaryTree };
 // //                        167      177
 // //                           168
 // //below is recursion - -for testing the above tree
-// function traverse(node) {
-//   const tree = { value: node.value };
-//   tree.left = node.left === null ? null : traverse(node.left);
-//   tree.right = node.right === null ? null : traverse(node.right);
-//   return tree;
-// }
+function traverse(node) {
+  const tree = { value: node.value };
+  tree.left = node.left === null ? null : traverse(node.left);
+  tree.right = node.right === null ? null : traverse(node.right);
+  return tree;
+}
 // // JSON.stringify(traverse(tree.root));
-// //console.log(JSON.stringify(traverse(tree.root)));
+// console.log(JSON.stringify(traverse(tree.root)));
 
 // // console.log(tree.lookup(9));
 // console.log(tree.remove(1));

@@ -1,4 +1,4 @@
-const { BinaryTree } = require("./binary-tree-solution");
+const { BinaryTree, traverse } = require("./binary-tree-solution");
 
 class AvlTree extends BinaryTree {
   constructor() {
@@ -6,53 +6,41 @@ class AvlTree extends BinaryTree {
   }
 
   //balances tree when nodes are added
-  balance(node = this.root) {
+  balance(node) {
     console.log("balance node value", node.value);
     if (super.balanceFactor(node) > 1) {
       // left subtree is higher than right subtree
-      console.log(
-        "right subtree is higher than left subtree",
-        super.balanceFactor(node),
-        super.balanceFactor(node.right),
-        super.balanceFactor(node.left)
-      );
-
-      if (super.balanceFactor(node.right) < 0) {
-        this.leftRotation(node);
-      }
-      if (super.balanceFactor(node.left) > 0) {
-        this.rightLeftRotation(node);
-      }
-    } else if (super.balanceFactor(node) < -1) {
-      // right subtree is higher than left subtree
-      console.log(
-        "left subtree is higher than right subtree",
-        super.balanceFactor(node)
-      );
       if (super.balanceFactor(node.left) > 0) {
         this.rightRotation(node);
       }
       if (super.balanceFactor(node.left) < 0) {
         this.leftRightRotation(node);
       }
+    } else if (super.balanceFactor(node) < -1) {
+      // right subtree is higher than left subtree
+      if (super.balanceFactor(node.right) < 0) {
+        this.leftRotation(node);
+      }
+      if (super.balanceFactor(node.right) > 0) {
+        this.rightLeftRotation(node);
+      }
     }
   }
 
   //helper for balancing
-  swapParentChild(oldChild, newChild, parent) {
-    console.log("swapping");
-    if (parent) {
+  swapParentChild(node, newParent, grandparent) {
+    console.log("swapping", node, newParent, parent);
+    if (grandparent) {
       let side;
-      if (parent.left === oldChild) {
+      if (grandparent.left === node) {
         side = "left";
-      } else if (parent.right === oldChild) {
+      } else if (grandparent.right === node) {
         side = "right";
       }
-      // this set parent child AND also
-      parent[side] = newChild;
+      grandparent[side] = newParent;
     } else {
-      // no parent? so set it to null
-      newChild.parent = null;
+      // no grandparent? so set it to null
+      newParent.parent = null;
     }
   }
 
@@ -84,7 +72,6 @@ class AvlTree extends BinaryTree {
   }
 
   rightLeftRotation(node) {
-    console.log("rightL rotation");
     this.rightRotation(node.right);
     return this.leftRotation(node);
   }
@@ -114,7 +101,6 @@ class AvlTree extends BinaryTree {
 
   balanceUp(node = this.root) {
     let current = node;
-    console.log("balancingUP", current.value);
     while (current) {
       this.balance(current);
       current = current.parent;
@@ -134,7 +120,8 @@ avlTree.add(160);
 avlTree.add(177);
 avlTree.add(167);
 avlTree.add(168);
-//avlTree.add(23);
+avlTree.add(23);
 //avlTree.balance();
 
 console.log(avlTree.isBalanced());
+console.log(traverse(avlTree.root));
