@@ -7,7 +7,7 @@ class AvlTree extends BinaryTree {
 
   //balances tree when nodes are added
   balance(node) {
-    console.log("balance node value", node.value);
+    console.log("balance node value", node);
     if (super.balanceFactor(node) > 1) {
       // left subtree is higher than right subtree
       if (super.balanceFactor(node.left) > 0) {
@@ -29,7 +29,7 @@ class AvlTree extends BinaryTree {
 
   //helper for balancing
   swapParentChild(node, newParent, grandparent) {
-    console.log("swapping", node, newParent, parent);
+    console.log("swapping", node.value, newParent.value, grandparent);
     if (grandparent) {
       let side;
       if (grandparent.left === node) {
@@ -38,31 +38,40 @@ class AvlTree extends BinaryTree {
         side = "right";
       }
       grandparent[side] = newParent;
+      node.parent = newParent;
     } else {
       // no grandparent? so set it to null
+      node.parent = newParent;
       newParent.parent = null;
+      this.root = newParent;
+      console.log("changing root to", this.root);
+      debugger;
     }
   }
 
   rightRotation(node) {
     // rotate the given node SO THAT IT IS A RIGHT DESCENDANT of a current child node
+    console.log("rotate right", node.value, node.left.value, node.parent);
     let newParent = node.left;
     let grandparent = node.parent;
     this.swapParentChild(node, newParent, grandparent);
     // do RR rotation
     newParent.right = node;
-    node.left = undefined;
+
+    node.left = null;
     return newParent;
   }
 
   leftRotation(node) {
     // rotate the given node SO THAT IT IS A LEFT DESCENDANT of a current child node
+    console.log("rotate left", node.value, node.right.value, node.parent);
     const newParent = node.right;
     const grandparent = node.parent;
     this.swapParentChild(node, newParent, grandparent);
     // do LL rotation
     newParent.left = node;
-    node.right = undefined;
+
+    node.right = null;
     return newParent;
   }
 
@@ -124,4 +133,10 @@ avlTree.add(23);
 //avlTree.balance();
 
 console.log(avlTree.isBalanced());
-console.log(traverse(avlTree.root));
+console.log(JSON.stringify(traverse(avlTree.root)));
+console.log(avlTree);
+
+//                    170
+//          20                    180
+//  9             167       177
+//            23      168

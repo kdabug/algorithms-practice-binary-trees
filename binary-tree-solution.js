@@ -136,10 +136,9 @@ class BinaryTree {
   balanceFactor(node) {
     let leftHeight = 0;
     let rightHeight = 0;
-    if (node.left) {
+    //console.log("balanceFactor", node);
+    if (node) {
       leftHeight = this.height(node.left);
-    }
-    if (node.right) {
       rightHeight = this.height(node.right);
     }
     console.log("leftHeight rightHeight", leftHeight, rightHeight);
